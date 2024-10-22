@@ -40,7 +40,7 @@ namespace ApiClinic.Controllers
 
             if (mailClaim == null)
             {
-                return NotFound();
+                return Unauthorized();
             }
 
             if (mailClaim.Value == email)
