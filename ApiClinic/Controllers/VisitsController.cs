@@ -46,12 +46,12 @@ namespace ApiClinic.Controllers
         {
             if (request.email == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var user = await _context.User.Where(u => u.EmailAddress == request.email).FirstOrDefaultAsync();
             if (user == null)
             {
-                return Unauthorized();
+                return NotFound();
             }
 
             var visit = await _context.Visit.Where(v => v.Id == request.visitId).Include(v => v.Patient).Include(v => v.Doctor).FirstOrDefaultAsync();
@@ -66,7 +66,7 @@ namespace ApiClinic.Controllers
                 var patient = await _context.Patient.Where(p => p.UserId == user.Id.ToString()).FirstOrDefaultAsync();
                 if (patient == null)
                 {
-                    return NotFound();
+                    return NotFound("Patient does not exist");
                 }
 
                 visit.Patient = patient;
@@ -77,9 +77,9 @@ namespace ApiClinic.Controllers
 
             if (Guid.Parse(visit.Patient.UserId) == user.Id)
             {
-                return BadRequest(visit);
+                return BadRequest("You've already appointed this visit");
             }
-            return NotFound();
+            return Unauthorized();
 
         }
 
@@ -88,12 +88,12 @@ namespace ApiClinic.Controllers
         {
             if (request.email == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var user = await _context.User.Where(u => u.EmailAddress == request.email).FirstOrDefaultAsync();
             if (user == null)
             {
-                return Unauthorized();
+                return NotFound();
             }
 
             var visit = await _context.Visit.Where(v => v.Id == request.visitId).Include(v=>v.Patient).Include(v=> v.Doctor).FirstOrDefaultAsync();
@@ -111,7 +111,7 @@ namespace ApiClinic.Controllers
             {
                 return Ok(visit);
             }
-            return NotFound();
+            return Unauthorized();
 
         }
 
